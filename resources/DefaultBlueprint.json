@@ -1,0 +1,40 @@
+{
+    "commons" : {
+        "num_points": 6000,
+
+        "signal_min": 1,
+        "signal_max": 2
+    },
+    "generators": [
+        {
+            "id": "ts1",
+            "shape": "sinusoidal",
+            "config": {
+                "frequency": 0.25
+            }
+        }
+    ],
+    "targets": [
+        {
+            "type": "s3",
+            "action": "put",
+            "generators": ["ts1"],
+            "fake_types": ["bban", "iban", "credit_card_full",
+                           "phone_number", "ssn", "address", "cve",
+                           "zipcode", "email", "profile", "zipcode",
+                           "file_name", "file_path", "itin", "swift_code"],
+            "fake_counts": 5,
+            "acls" : ["private"]
+        },
+        {
+            "type": "s3",
+            "action": "put",
+            "generators": ["ts1"],
+            "fake_types": ["rsa", "dsa", "pgp", "ec", "cert", "aws_creds",
+                           "github_creds", "slack_creds", "facebook_creds",
+                           "linux_shadow", "linux_passwd"],
+            "fake_counts": 1,
+            "acls" : ["private"]
+        }
+    ]
+}

@@ -1,0 +1,48 @@
+# Copyright 2018 Amazon.com, Inc. and its affiliates. All Rights Reserved.
+# Licensed under the Amazon Software License (the "License"). You may not use this file
+# except in compliance with the License. A copy of the License is located at
+# http://aws.amazon.com/asl/
+# or in the "license" file accompanying this file. This file is distributed on an "AS IS"
+# BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under the License.
+
+rm -f LambdaFunction.zip \
+&& rm -rf LambdaFunction \
+&& mkdir LambdaFunction \
+&& cp -r ./src/* ./LambdaFunction \
+&& pip install -r ./requirements.txt -t ./LambdaFunction \
+&& find ./LambdaFunction -name "*.pyc" -type f -delete \
+&& cd ./LambdaFunction \
+&& zip -r ../LambdaFunction.zip * && \
+cd ..
+
+if [ -z "$1" ]; then
+    echo "No deployment S3 bucket specified."
+else
+    aws s3 cp LambdaFunction.zip s3://$1 \
+    && aws s3 --recursive cp ./resources/ s3://$1
+
+    if [ -z "$2" ]; then
+        echo "No cloudformation stack name specified."
+    else
+        if [ -z "$3" ]; then
+            aws cloudformation create-stack --stack-name $2 \
+                --template-url https://s3.amazonaws.com/$1/CloudFormationTemplate.yml \
+                --parameters ParameterKey=BlueprintBucket,ParameterValue=$1 \
+                             ParameterKey=BlueprintObject,ParameterValue=DefaultBlueprint.json \
+                             ParameterKey=LambdaPkgBucket,ParameterValue=$1 \
+                             ParameterKey=LambdaPkgObject,ParameterValue=LambdaFunction.zip\
+                --capabilities CAPABILITY_IAM
+        else
+            aws cloudformation create-stack --stack-name $2 \
+                --template-url https://s3.amazonaws.com/$1/CloudFormationTemplate.yml \
+                --parameters ParameterKey=BlueprintBucket,ParameterValue=$1 \
+                             ParameterKey=BlueprintObject,ParameterValue=$3 \
+                             ParameterKey=LambdaPkgBucket,ParameterValue=$1 \
+                             ParameterKey=LambdaPkgObject,ParameterValue=LambdaFunction.zip\
+                --capabilities CAPABILITY_IAM
+        fi
+    fi
+fi
+
+rm -rf LambdaFunction

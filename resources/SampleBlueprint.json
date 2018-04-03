@@ -1,0 +1,119 @@
+{
+    "commons": {
+        "num_points": 10000,
+
+        "signal_min": 1,
+        "signal_max": 10,
+
+        "noise_min": -5,
+        "noise_max": 5,
+
+        "anomalies": {
+            "start": 10,
+            "end": 20,
+            "counts": 2,
+            "formula": "max(datapoints) + t * 10"
+        }
+    },
+    "generators": [
+        {
+            "id": "ts1",
+            "shape": "sinusoidal",
+            "config": {
+                "frequency": 0.25
+            }
+        },
+        {
+            "id": "ts2",
+            "shape": "constant",
+            "config": {
+                "num_points": 50,
+                "constant": 20,
+                "anomalies": {
+                    "start": 80,
+                    "end": 85,
+                    "counts": 1
+                }
+            }
+        },
+        {
+            "id": "ts3",
+            "shape": "random",
+            "config": {
+                "type": "uniform"
+            }
+        },
+        {
+            "id": "ts4",
+            "shape": "square",
+            "config": {
+                "high_value": 40,
+                "low_value": 10,
+                "high_width": 5,
+                "low_width": 10
+            }
+        },
+        {
+            "id": "ts5",
+            "shape": "real",
+            "config": {
+                "bucket": "test-bucket",
+                "key": "sample-timeseries.dat"
+            }
+        },
+        {
+            "id": "ts6",
+            "shape": "custom",
+            "config": {
+                "formula": "t * 10"
+            }
+        }
+    ],
+    "targets": [
+        {
+            "type": "s3",
+            "prefix": "sensitive/",
+            "action": "put",
+            "generators": ["ts1", "ts2"],
+            "fake_types": ["bban", "iban", "credit_card_full",
+                           "phone_number", "ssn", "address"],
+            "fake_counts": 20
+        },
+        {
+            "type": "s3",
+            "prefix": "crypto/",
+            "action": "put",
+            "generators": ["ts1", "ts2"],
+            "fake_types": ["rsa", "dsa", "pgp", "ec", "aws_creds",
+                           "github_creds", "slack_creds", "facebook_creds"],
+            "fake_counts": 1
+        },
+        {
+            "type": "s3",
+            "prefix": "passwd/",
+            "action": "put",
+            "generators": ["ts1", "ts2"],
+            "fake_types": ["linux_shadow", "linux_passwd"],
+            "fake_counts": 1
+        },
+        {
+            "type": "s3",
+            "bucket": "test-bucket",
+            "action": "get",
+            "slice_size": 100,
+            "generators": ["ts3", "ts4"]
+        },
+        {
+            "type": "lambda",
+            "function": "test",
+            "generators": ["ts1"],
+            "group_datapoints": true
+        },
+        {
+            "type": "cloudwatch",
+            "namespace": "Test/Timeseries",
+            "generators": ["ts1", "ts2", "ts3", "ts4", "ts5", "ts6"],
+            "group_datapoints": true
+        }
+    ]
+}
