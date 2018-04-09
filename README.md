@@ -314,6 +314,14 @@ For **AWS Lambda targets**, they will be invoked by activity generator with an *
 
 # Installation
 
+## Prerequisites:
+
+1) Preparing host to Compile Software using: sudo yum groupinstall "Development Tools"
+2) Upgrade your pip using: sudo pip install --upgrade pip
+3) Fix path to pip after upgrade: hash -r 
+
+## Build and Deploy:
+
 You can use "deploy" script found in activity generator package to install it using CloudFormation:
  
 ./deploy DEPLOYMENT_S3_BUCKET_NAME [CLOUDFORMATION_STACK_NAME] [CONFIGURATION_FILE_S3_KEY]
