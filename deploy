@@ -10,19 +10,17 @@ rm -f LambdaFunction.zip \
 && rm -rf LambdaFunction \
 && mkdir LambdaFunction \
 && cp -r ./src/* ./LambdaFunction \
-&& pip install -r ./requirements.txt -t ./LambdaFunction \
+&& pip install -r ./requirements.txt -t ./LambdaFunction --no-cache-dir \
 && find ./LambdaFunction -name "*.pyc" -type f -delete \
 && cd ./LambdaFunction \
-&& zip -r ../LambdaFunction.zip * && \
-cd ..
-
-if [ -z "$1" ]; then
+&& zip -r ../LambdaFunction.zip * \
+&& cd .. \
+&& if [ -z "$1" ]; then
     echo "No deployment S3 bucket specified."
 else
     aws s3 cp LambdaFunction.zip s3://$1 \
-    && aws s3 --recursive cp ./resources/ s3://$1
-
-    if [ -z "$2" ]; then
+    && aws s3 --recursive cp ./resources/ s3://$1 \
+    && if [ -z "$2" ]; then
         echo "No cloudformation stack name specified."
     else
         if [ -z "$3" ]; then
