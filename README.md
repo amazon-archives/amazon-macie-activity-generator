@@ -316,15 +316,18 @@ For **AWS Lambda targets**, they will be invoked by activity generator with an *
 
 ## Prerequisites:
 
-1) Preparing host to Compile Software using: sudo yum groupinstall "Development Tools"
-2) Upgrade your pip using: sudo pip install --upgrade pip
-3) Fix path to pip after upgrade: hash -r 
+1) Launch an EC2 instance with Amazon Linux AMI.
+2) Prepare the EC2 host to compile Software using: sudo yum groupinstall "Development Tools"
+3) Upgrade your pip on the EC2 host using: sudo pip install --upgrade pip
+4) Fix path to pip after upgrade: hash -r 
 
 ## Build and Deploy:
 
 You can use "deploy" script found in activity generator package to install it using CloudFormation:
  
 ./deploy DEPLOYMENT_S3_BUCKET_NAME [CLOUDFORMATION_STACK_NAME] [CONFIGURATION_FILE_S3_KEY]
+
+**Note**: Your EC2 instance profile (or the identity correponding to override AWS credentials if setup using environment variables) needs to have permissions for writing to S3 bucket: DEPLOYMENT_S3_BUCKET_NAME and create a CloudFormation stack with specified resources in the CloudFormation template (./resource/CloudFormationTemplate.yaml).  
 
 By default, the CloudFormation stack is named "amazon-macie-activity-generator" and a default configuration file (./resources/DefaultBlueprint.json) is used. However, you may override these default values in command line parameters.
 
