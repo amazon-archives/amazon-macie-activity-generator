@@ -1,5 +1,5 @@
 numpy
 scipy
 faker
-git+https://github.com/neurophysik/jitcdde.git@697fb23#egg=jitcdde
-git+https://github.com/TimeSynth/TimeSynth.git
+git+https://github.com/neurophysik/jitcdde.git@0.32#egg=jitcdde
+git+https://github.com/TimeSynth/TimeSynth.git@4c096cb
