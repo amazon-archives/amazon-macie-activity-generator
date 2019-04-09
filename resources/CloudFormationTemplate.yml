@@ -3,7 +3,7 @@ Description: "Amazon Macie Activity Generator"
 
 Metadata:
   License:
-    Description: 'Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0'
+    Description: 'Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0'
 
 Parameters: 
   BlueprintBucket: 
